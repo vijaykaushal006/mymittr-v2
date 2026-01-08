@@ -1,0 +1,7 @@
+{
+  "name": "MyMittr",
+  "description": "A respectful community and job platform for experienced individuals aged 45 and above.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
