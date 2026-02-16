@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { supabase } from "@/lib/supabaseClient";
+import { createClient } from "@/lib/supabaseClient";
 
 interface FormData {
   full_name?: string;
@@ -37,8 +37,8 @@ type Role = "myself" | "parent" | "volunteer" | "vendor" | "job_poster" | "";
 
 export default function SignupPage() {
   const router = useRouter();
-const searchParams = useSearchParams();
-const roleFromUrl = searchParams.get("role") as Role;
+  const searchParams = useSearchParams();
+  const roleFromUrl = searchParams.get("role") as Role;
 
   const [step, setStep] = useState(1);
   const [role, setRole] = useState<Role>("");
@@ -64,6 +64,7 @@ const roleFromUrl = searchParams.get("role") as Role;
     setError("");
 
     try {
+      const supabase = createClient();
       // Sign up user
       const { data, error: signUpError } = await supabase.auth.signUp({
         email: form.email!,
@@ -178,7 +179,7 @@ const roleFromUrl = searchParams.get("role") as Role;
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50 px-4 py-8">
       <div className="bg-white p-8 md:p-12 rounded-3xl shadow-2xl w-full max-w-2xl">
-        
+
         {/* Header */}
         <div className="text-center mb-8">
           <h1 className="text-3xl md:text-4xl font-bold text-[#1e4d45] mb-2">
@@ -211,7 +212,7 @@ const roleFromUrl = searchParams.get("role") as Role;
         {step === 1 && (
           <div className="space-y-4">
             <h2 className="text-2xl font-bold text-gray-800 mb-6">Who are you?</h2>
-            
+
             <div className="grid gap-4">
               {[
                 { value: "myself", label: "Myself (Senior)" },
@@ -248,7 +249,7 @@ const roleFromUrl = searchParams.get("role") as Role;
         {/* Step 2: Form */}
         {step === 2 && (
           <form onSubmit={handleSignup} className="space-y-5">
-            
+
             {/* Back button */}
             <button
               type="button"
@@ -333,7 +334,7 @@ const roleFromUrl = searchParams.get("role") as Role;
             {role === "myself" && (
               <div className="space-y-4 pt-4 border-t border-gray-200">
                 <h3 className="text-lg font-semibold text-gray-800">Senior Information</h3>
-                
+
                 <div className="grid md:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">Age</label>
@@ -387,7 +388,7 @@ const roleFromUrl = searchParams.get("role") as Role;
             {role === "parent" && (
               <div className="space-y-4 pt-4 border-t border-gray-200">
                 <h3 className="text-lg font-semibold text-gray-800">Parent Information</h3>
-                
+
                 <div className="grid md:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">Relationship</label>
@@ -445,7 +446,7 @@ const roleFromUrl = searchParams.get("role") as Role;
             {role === "volunteer" && (
               <div className="space-y-4 pt-4 border-t border-gray-200">
                 <h3 className="text-lg font-semibold text-gray-800">Volunteer Information</h3>
-                
+
                 <div className="grid md:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">Skills</label>
@@ -487,7 +488,7 @@ const roleFromUrl = searchParams.get("role") as Role;
             {role === "vendor" && (
               <div className="space-y-4 pt-4 border-t border-gray-200">
                 <h3 className="text-lg font-semibold text-gray-800">Business Information</h3>
-                
+
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Business Name</label>
                   <input
@@ -534,7 +535,7 @@ const roleFromUrl = searchParams.get("role") as Role;
             {role === "job_poster" && (
               <div className="space-y-4 pt-4 border-t border-gray-200">
                 <h3 className="text-lg font-semibold text-gray-800">Company Information</h3>
-                
+
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Company Name</label>
                   <input

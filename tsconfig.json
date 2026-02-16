@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+<<<<<<< HEAD
     "target": "ES2017",
     "lib": [
       "dom",
@@ -18,11 +19,32 @@
     "jsx": "react-jsx",
     "incremental": true,
     "baseUrl": ".",
+=======
+    "target": "ES2022",
+    "experimentalDecorators": true,
+    "useDefineForClassFields": false,
+    "module": "ESNext",
+    "lib": [
+      "ES2022",
+      "DOM",
+      "DOM.Iterable"
+    ],
+    "skipLibCheck": true,
+    "types": [
+      "node"
+    ],
+    "moduleResolution": "bundler",
+    "isolatedModules": true,
+    "moduleDetection": "force",
+    "allowJs": true,
+    "jsx": "react-jsx",
+>>>>>>> 8ff5c845e49a2df04e33e894496a849c608af805
     "paths": {
       "@/*": [
         "./*"
       ]
     },
+<<<<<<< HEAD
     "plugins": [
       {
         "name": "next"
@@ -40,3 +62,9 @@
     "node_modules"
   ]
 }
+=======
+    "allowImportingTsExtensions": true,
+    "noEmit": true
+  }
+}
+>>>>>>> 8ff5c845e49a2df04e33e894496a849c608af805

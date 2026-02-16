@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { supabase } from "@/lib/supabaseClient";
+import { createClient } from "@/lib/supabaseClient";
 import Link from "next/link";
 
 export default function LoginContent() {
@@ -22,6 +22,7 @@ export default function LoginContent() {
     setLoading(true);
     setError("");
 
+    const supabase = createClient();
     const { error: authError } = await supabase.auth.signInWithPassword({
       email,
       password,

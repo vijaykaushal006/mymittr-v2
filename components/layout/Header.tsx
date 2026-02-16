@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { supabase } from "@/lib/supabaseClient";
+import { createClient } from "@/lib/supabaseClient";
 
 export default function Header() {
   const pathname = usePathname();
@@ -26,6 +26,7 @@ export default function Header() {
 
   // Detect logged-in user and get profile
   useEffect(() => {
+    const supabase = createClient();
     const getSession = async () => {
       const {
         data: { session },
@@ -86,9 +87,10 @@ export default function Header() {
     });
 
     return () => subscription.unsubscribe();
-  }, [supabase]);
+  }, []);
 
   async function handleLogout() {
+    const supabase = createClient();
     await supabase.auth.signOut();
     setUser(null);
     setUserName("");
