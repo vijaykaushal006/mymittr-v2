@@ -33,106 +33,87 @@ export async function createAlbum(name: string, description?: string, privacy?: 
     return { success: true, album };
 }
 
-export async function addPhotoToAlbum(albumId: string, photoUrl: string, caption?: string, taggedUsers?: string[]) {
-    const supabase = await createClient();
+// TODO: Uncomment when album_photos table is added to migration
+// export async function addPhotoToAlbum(albumId: string, photoUrl: string, caption?: string, taggedUsers?: string[]) {
+//     const supabase = await createClient();
 
-    const {
-        data: { user },
-    } = await supabase.auth.getUser();
+//     const {
+//         data: { user },
+//     } = await supabase.auth.getUser();
 
-    if (!user) return { error: "Not authenticated" };
+//     if (!user) return { error: "Not authenticated" };
 
-    // Verify album ownership
-    const { data: album } = await supabase
-        .from("photo_albums")
-        .select("user_id")
-        .eq("id", albumId)
-        .single();
+//     // Verify album ownership
+//     const { data: album } = await supabase
+//         .from("photo_albums")
+//         .select("user_id")
+//         .eq("id", albumId)
+//         .single();
 
-    if (!album || album.user_id !== user.id) {
-        return { error: "Not authorized" };
-    }
+//     if (!album || album.user_id !== user.id) {
+//         return { error: "Not authorized" };
+//     }
 
-    const { data: photo, error } = await supabase
-        .from("album_photos")
-        .insert({
-            album_id: albumId,
-            photo_url: photoUrl,
-            caption: caption || null,
-            tagged_users: taggedUsers || null,
-        })
-        .select()
-        .single();
+//     const { data: photo, error } = await supabase
+//         .from("album_photos")
+//         .insert({
+//             album_id: albumId,
+//             photo_url: photoUrl,
+//             caption: caption || null,
+//             tagged_users: taggedUsers || null,
+//         })
+//         .select()
+//         .single();
 
-    if (error) return { error: error.message };
+//     if (error) return { error: error.message };
 
-    // Create notifications for tagged users
-    if (taggedUsers && taggedUsers.length > 0) {
-        const notifications = taggedUsers.map(userId => ({
-            user_id: userId,
-            type: "photo_tag" as any,
-            content: "tagged you in a photo",
-            related_id: photo.id,
-        }));
+//     // Create notifications for tagged users
+//     if (taggedUsers && taggedUsers.length > 0) {
+//         const notifications = taggedUsers.map(userId => ({
+//             user_id: userId,
+//             type: "photo_tag" as any,
+//             content: "tagged you in a photo",
+//             related_id: photo.id,
+//         }));
 
-        await supabase.from("notifications").insert(notifications);
-    }
+//         await supabase.from("notifications").insert(notifications);
+//     }
 
-    revalidatePath("/profile/photos");
-    return { success: true, photo };
-}
+//     revalidatePath("/profile/photos");
+//     return { success: true, photo };
+// }
 
-export async function deleteAlbum(albumId: string) {
-    const supabase = await createClient();
+// export async function deletePhoto(photoId: string) {
+//     const supabase = await createClient();
 
-    const {
-        data: { user },
-    } = await supabase.auth.getUser();
+//     const {
+//         data: { user },
+//     } = await supabase.auth.getUser();
 
-    if (!user) return { error: "Not authenticated" };
+//     if (!user) return { error: "Not authenticated" };
 
-    const { error } = await supabase
-        .from("photo_albums")
-        .delete()
-        .eq("id", albumId)
-        .eq("user_id", user.id);
+//     // Verify ownership through album
+//     const { data: photo } = await supabase
+//         .from("album_photos")
+//         .select("album_id, photo_albums(user_id)")
+//         .eq("id", photoId)
+//         .single();
 
-    if (error) return { error: error.message };
+//     if (!photo || (photo.photo_albums as any)?.user_id !== user.id) {
+//         return { error: "Not authorized" };
+//     }
 
-    revalidatePath("/profile/photos");
-    return { success: true };
-}
+//     const { error } = await supabase
+//         .from("album_photos")
+//         .delete()
+//         .eq("id", photoId);
 
-export async function deletePhoto(photoId: string) {
-    const supabase = await createClient();
+//     if (error) return { error: error.message };
 
-    const {
-        data: { user },
-    } = await supabase.auth.getUser();
+//     revalidatePath("/profile/photos");
+//     return { success: true };
+// }
 
-    if (!user) return { error: "Not authenticated" };
-
-    // Verify ownership through album
-    const { data: photo } = await supabase
-        .from("album_photos")
-        .select("album_id, photo_albums(user_id)")
-        .eq("id", photoId)
-        .single();
-
-    if (!photo || (photo.photo_albums as any)?.user_id !== user.id) {
-        return { error: "Not authorized" };
-    }
-
-    const { error } = await supabase
-        .from("album_photos")
-        .delete()
-        .eq("id", photoId);
-
-    if (error) return { error: error.message };
-
-    revalidatePath("/profile/photos");
-    return { success: true };
-}
 
 /* =========================
    MEDIA UPLOAD TO SUPABASE STORAGE
@@ -208,22 +189,24 @@ export async function updateProfilePhoto(photoUrl: string) {
     return { success: true };
 }
 
-export async function updateCoverPhoto(photoUrl: string) {
-    const supabase = await createClient();
+// TODO: Add cover_photo_url column to profiles table first
+// export async function updateCoverPhoto(photoUrl: string) {
+//     const supabase = await createClient();
 
-    const {
-        data: { user },
-    } = await supabase.auth.getUser();
+//     const {
+//         data: { user },
+//     } = await supabase.auth.getUser();
 
-    if (!user) return { error: "Not authenticated" };
+//     if (!user) return { error: "Not authenticated" };
 
-    const { error } = await supabase
-        .from("profiles")
-        .update({ cover_photo_url: photoUrl })
-        .eq("id", user.id);
+//     const { error } = await supabase
+//         .from("profiles")
+//         .update({ cover_photo_url: photoUrl })
+//         .eq("id", user.id);
 
-    if (error) return { error: error.message };
+//     if (error) return { error: error.message };
 
-    revalidatePath("/profile");
-    return { success: true };
-}
+//     revalidatePath("/profile");
+//     return { success: true };
+// }
+

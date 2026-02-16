@@ -210,43 +210,45 @@ export async function removeMember(groupId: string, userId: string) {
     return { success: true };
 }
 
-export async function createGroupPost(groupId: string, content: string, mediaUrls?: string[]) {
-    const supabase = await createClient();
+// TODO: Uncomment when group_posts table is added to migration
+// export async function createGroupPost(groupId: string, content: string, mediaUrls?: string[]) {
+//     const supabase = await createClient();
 
-    const {
-        data: { user },
-    } = await supabase.auth.getUser();
+//     const {
+//         data: { user },
+//     } = await supabase.auth.getUser();
 
-    if (!user) return { error: "Not authenticated" };
+//     if (!user) return { error: "Not authenticated" };
 
-    // Check if user is a member
-    const { data: member } = await supabase
-        .from("group_members")
-        .select("status")
-        .eq("group_id", groupId)
-        .eq("user_id", user.id)
-        .single();
+//     // Check if user is a member
+//     const { data: member } = await supabase
+//         .from("group_members")
+//         .select("status")
+//         .eq("group_id", groupId)
+//         .eq("user_id", user.id)
+//         .single();
 
-    if (!member || member.status !== "approved") {
-        return { error: "Not a member of this group" };
-    }
+//     if (!member || member.status !== "approved") {
+//         return { error: "Not a member of this group" };
+//     }
 
-    const { data: post, error } = await supabase
-        .from("group_posts")
-        .insert({
-            group_id: groupId,
-            user_id: user.id,
-            content,
-            media_urls: mediaUrls || null,
-        })
-        .select()
-        .single();
+//     const { data: post, error } = await supabase
+//         .from("group_posts")
+//         .insert({
+//             group_id: groupId,
+//             user_id: user.id,
+//             content,
+//             media_urls: mediaUrls || null,
+//         })
+//         .select()
+//         .single();
 
-    if (error) return { error: error.message };
+//     if (error) return { error: error.message };
 
-    revalidatePath(`/services/groups/${groupId}`);
-    return { success: true, post };
-}
+//     revalidatePath(`/services/groups/${groupId}`);
+//     return { success: true, post };
+// }
+
 
 export async function updateGroup(groupId: string, updates: {
     name?: string;
