@@ -48,9 +48,23 @@ export async function middleware(request: NextRequest) {
     }
   }
 
-  // Protect community and other service routes
-  if (!user && request.nextUrl.pathname.startsWith("/services/community")) {
-    return NextResponse.redirect(new URL("/login", request.url));
+  // Protect authenticated routes
+  const protectedRoutes = [
+    '/services/community',
+    '/profile',
+    '/settings',
+    '/messages',
+    '/friends'
+  ];
+
+  const isProtectedRoute = protectedRoutes.some(route =>
+    request.nextUrl.pathname.startsWith(route)
+  );
+
+  if (!user && isProtectedRoute) {
+    const redirectUrl = new URL('/login', request.url);
+    redirectUrl.searchParams.set('redirect', request.nextUrl.pathname);
+    return NextResponse.redirect(redirectUrl);
   }
 
   return response;
