@@ -111,18 +111,19 @@ export default function EventCard({ event }: EventCardProps) {
                         target="_blank"
                         rel="noopener noreferrer"
                         className="block w-full bg-[#1e4d45] hover:bg-[#153a33] text-white text-xl font-bold py-4 px-6 rounded-xl text-center transition-colors duration-200"
+                        aria-label={`Register for ${event.title} (opens in a new tab)`}
                     >
                         Register Now →
                     </a>
                 ) : (
-                    <div className="block w-full bg-gray-200 text-gray-500 text-xl font-bold py-4 px-6 rounded-xl text-center">
+                    <div className="block w-full bg-gray-200 text-gray-600 text-xl font-bold py-4 px-6 rounded-xl text-center">
                         No Registration Link
                     </div>
                 )}
 
                 {/* External Link Disclaimer */}
                 {event.registration_url && (
-                    <p className="text-xs text-gray-500 text-center mt-2">
+                    <p className="text-sm text-gray-600 text-center mt-2 font-medium">
                         ⚠️ External link - opens in new tab
                     </p>
                 )}
