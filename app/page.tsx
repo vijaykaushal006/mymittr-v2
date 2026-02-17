@@ -1,3 +1,4 @@
+
 import Counter from "@/components/ui/Counter";
 import Image from "next/image";
 import FadeIn from "@/components/ui/FadeIn";
