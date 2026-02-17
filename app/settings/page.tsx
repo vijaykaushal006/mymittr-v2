@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { supabase } from "@/lib/supabaseClient";
+import { createClient } from "@/lib/supabaseClient";
 import { useRouter } from "next/navigation";
 
 export default function SettingsPage() {
@@ -24,6 +24,7 @@ export default function SettingsPage() {
     }, []);
 
     async function loadUserData() {
+        const supabase = createClient();
         const {
             data: { user },
         } = await supabase.auth.getUser();
@@ -54,6 +55,7 @@ export default function SettingsPage() {
         setLoading(true);
 
         try {
+            const supabase = createClient();
             const { error } = await supabase
                 .from("profiles")
                 .update({
@@ -85,6 +87,7 @@ export default function SettingsPage() {
         setLoading(true);
 
         try {
+            const supabase = createClient();
             const { error } = await supabase.auth.updateUser({
                 password: newPassword,
             });
@@ -102,6 +105,7 @@ export default function SettingsPage() {
     }
 
     async function handleSignOut() {
+        const supabase = createClient();
         await supabase.auth.signOut();
         router.push("/");
     }

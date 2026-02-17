@@ -2,10 +2,10 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { supabase } from "@/lib/supabaseClient";
+import { createClient } from "@/lib/supabaseClient";
 
 export default function ResetPasswordPage() {
-  
+
   const router = useRouter();
 
   const [password, setPassword] = useState("");
@@ -16,6 +16,7 @@ export default function ResetPasswordPage() {
 
   // 🔑 Step 1: Read tokens from URL and set session
   useEffect(() => {
+    const supabase = createClient();
     const hash = window.location.hash;
     if (!hash) return;
 
@@ -48,6 +49,7 @@ export default function ResetPasswordPage() {
     setLoading(true);
     setError("");
 
+    const supabase = createClient();
     const { error } = await supabase.auth.updateUser({
       password: password,
     });

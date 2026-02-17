@@ -1,16 +1,17 @@
 "use client";
 
 import { useState } from "react";
-import { supabase } from "@/lib/supabaseClient";
+import { createClient } from "@/lib/supabaseClient";
 
 export default function ForgotPassword() {
-  
+
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
 
   async function handleReset(e: React.FormEvent) {
     e.preventDefault();
 
+    const supabase = createClient();
     await supabase.auth.resetPasswordForEmail(email, {
       redirectTo: "http://localhost:3000/update-password",
     });
