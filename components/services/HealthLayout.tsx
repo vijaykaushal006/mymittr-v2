@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { healthTopics } from '@/lib/health-content';
 import Link from 'next/link';
 
@@ -15,9 +15,26 @@ export default function HealthLayout() {
     // Find active topic safely
     const activeTopic = healthTopics.find(t => t.id === activeTopicId) || healthTopics[0];
 
-    // Scroll to top when topic changes on mobile
+    const contentRef = useRef<HTMLElement>(null);
+
+    // Smart scroll handling: Scroll to top of content, not page
     useEffect(() => {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        if (!contentRef.current) return;
+
+        // Calculate position of the content area relative to the document
+        const rect = contentRef.current.getBoundingClientRect();
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        const headerOffset = 140; // Approx height of sticky header + sidebar offset
+        const targetPosition = rect.top + scrollTop - headerOffset;
+
+        // If user has scrolled PAST the start of the content, gently scroll back to start
+        // This preserves the hero section if they are at the top, but resets reading if deep in article
+        if (scrollTop > targetPosition) {
+            window.scrollTo({
+                top: targetPosition,
+                behavior: 'smooth'
+            });
+        }
     }, [activeTopicId]);
 
     return (
@@ -76,8 +93,11 @@ export default function HealthLayout() {
             </aside>
 
             {/* MAIN CONTENT AREA - Reading Experience */}
-            <main id="main-content" className="lg:w-2/3 min-h-[600px] animate-in fade-in duration-500">
-                <article className="bg-white rounded-[2rem] p-6 sm:p-10 lg:p-12 shadow-sm border border-gray-100">
+            <main ref={contentRef} id="main-content" className="lg:w-2/3 min-h-[600px]">
+                <article
+                    key={activeTopicId}
+                    className="bg-white rounded-[2rem] p-6 sm:p-10 lg:p-12 shadow-sm border border-gray-100 animate-in fade-in slide-in-from-bottom-4 duration-500"
+                >
 
                     {/* Header */}
                     <header className="mb-10 pb-8 border-b-2 border-gray-100">
