@@ -24,106 +24,94 @@ export default function Header() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Detect logged-in user and get profile
+  // Helper to clear all user state
+  const clearUserState = () => {
+    setUser(null);
+    setUserName("");
+    setUserDropdownOpen(false);
+  };
+
+  // Helper to update user state and fetch profile
+  const updateUserState = async (user: any) => {
+    setUser(user);
+    const supabase = createClient();
+
+    try {
+      // Try to get profile name first
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("full_name")
+        .eq("id", user.id)
+        .single();
+
+      if (profile?.full_name) {
+        setUserName(profile.full_name);
+      } else {
+        // Fallback to metadata
+        const metadataName = user.user_metadata?.full_name || user.user_metadata?.name;
+        setUserName(metadataName || user.email?.split("@")[0] || "Friend");
+      }
+    } catch (error) {
+      console.error("Error fetching profile:", error);
+      // Fallback if profile fetch fails
+      setUserName(user.email?.split("@")[0] || "Friend");
+    }
+  };
+
+  // Detect logged-in user and handle auth state changes
   useEffect(() => {
     const supabase = createClient();
-    const getSession = async () => {
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
 
-      if (session?.user) {
-        setUser(session.user);
+    // Initial session check
+    const checkUser = async () => {
+      try {
+        const { data: { session }, error } = await supabase.auth.getSession();
+        if (error) throw error;
 
-        // Get user's full name from profile
-        const { data: profile } = await supabase
-          .from("profiles")
-          .select("full_name")
-          .eq("id", session.user.id)
-          .single();
-
-        if (profile?.full_name) {
-          setUserName(profile.full_name);
-        } else if (session.user.user_metadata?.full_name) {
-          setUserName(session.user.user_metadata.full_name);
-        } else if (session.user.user_metadata?.name) {
-          setUserName(session.user.user_metadata.name);
+        if (session?.user) {
+          await updateUserState(session.user);
         } else {
-          setUserName(session.user.email?.split("@")[0] || "User");
+          clearUserState();
         }
-      } else {
-        setUser(null);
-        setUserName("");
+      } catch (error) {
+        console.error("Auth check failed:", error);
+        clearUserState();
       }
     };
 
-    getSession();
+    checkUser();
 
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (_event, session) => {
-      if (session?.user) {
-        setUser(session.user);
-
-        const { data: profile } = await supabase
-          .from("profiles")
-          .select("full_name")
-          .eq("id", session.user.id)
-          .single();
-
-        if (profile?.full_name) {
-          setUserName(profile.full_name);
-        } else if (session.user.user_metadata?.full_name) {
-          setUserName(session.user.user_metadata.full_name);
-        } else if (session.user.user_metadata?.name) {
-          setUserName(session.user.user_metadata.name);
-        } else {
-          setUserName(session.user.email?.split("@")[0] || "User");
-        }
-      } else {
-        setUser(null);
-        setUserName("");
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      if (event === 'SIGNED_OUT' || !session) {
+        clearUserState();
+        router.refresh();
+      } else if (session?.user) {
+        await updateUserState(session.user);
+        router.refresh();
       }
     });
 
-    return () => subscription.unsubscribe();
-  }, []);
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, [router]);
 
   async function handleLogout() {
     try {
       const supabase = createClient();
 
-      // Sign out from Supabase
-      const { error } = await supabase.auth.signOut();
+      // 1. Immediate UI update
+      clearUserState();
 
-      if (error) {
-        console.error('Logout error:', error);
-      }
+      // 2. Call Supabase SignOut
+      await supabase.auth.signOut();
 
-      // Clear local state
-      setUser(null);
-      setUserName("");
-      setUserDropdownOpen(false);
+      // 3. Force hard reload to clear all robustly
+      window.location.href = "/";
 
-      // Clear any cached data
-      if (typeof window !== 'undefined') {
-        // Clear localStorage
-        localStorage.clear();
-        // Clear sessionStorage
-        sessionStorage.clear();
-      }
-
-      // Force router refresh and redirect
-      router.refresh();
-      router.push("/");
-
-      // Force page reload to clear all state
-      setTimeout(() => {
-        window.location.href = "/";
-      }, 100);
     } catch (error) {
       console.error('Logout failed:', error);
-      // Force redirect even if error
       window.location.href = "/";
     }
   }
