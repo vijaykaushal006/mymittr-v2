@@ -213,3 +213,142 @@ export async function inviteToEvent(eventId: string, userIds: string[]) {
 
     return { success: true };
 }
+
+/* =========================
+   SENIOR EVENTS (Aggregation System)
+========================= */
+
+import type { SeniorEvent, EventFilters, PaginatedEvents } from '@/types/events';
+
+export async function fetchEvents(
+    filters: EventFilters = {},
+    page: number = 1,
+    perPage: number = 20
+): Promise<PaginatedEvents> {
+    try {
+        const supabase = await createClient();
+
+        // Build query
+        // @ts-expect-error - senior_events table will exist after migration
+        let query = supabase
+            .from('senior_events')
+            .select('*', { count: 'exact' })
+            .eq('approved', true)
+            .eq('rejected', false)
+            .gte('start_datetime', new Date().toISOString())
+            .order('start_datetime', { ascending: true });
+
+        // Apply filters
+        if (filters.city) {
+            query = query.ilike('city', filters.city);
+        }
+
+        if (filters.category) {
+            query = query.eq('category', filters.category);
+        }
+
+        if (filters.is_online !== undefined) {
+            query = query.eq('is_online', filters.is_online);
+        }
+
+        if (filters.verified_only) {
+            query = query.eq('verified', true);
+        }
+
+        if (filters.start_date) {
+            query = query.gte('start_datetime', filters.start_date);
+        }
+
+        if (filters.end_date) {
+            query = query.lte('start_datetime', filters.end_date);
+        }
+
+        // Pagination
+        const from = (page - 1) * perPage;
+        const to = from + perPage - 1;
+        query = query.range(from, to);
+
+        const { data, error, count } = await query;
+
+        if (error) {
+            console.error('Fetch events error:', error);
+            throw error;
+        }
+
+        return {
+            events: (data as SeniorEvent[]) || [],
+            total: count || 0,
+            page,
+            per_page: perPage,
+            has_more: count ? (page * perPage) < count : false,
+        };
+
+    } catch (error) {
+        console.error('fetchEvents error:', error);
+        return {
+            events: [],
+            total: 0,
+            page,
+            per_page: perPage,
+            has_more: false,
+        };
+    }
+}
+
+export async function getFeaturedEvents(limit: number = 6): Promise<SeniorEvent[]> {
+    try {
+        const supabase = await createClient();
+
+        // @ts-expect-error - senior_events table will exist after migration
+        const { data, error } = await supabase
+            .from('senior_events')
+            .select('*')
+            .eq('approved', true)
+            .eq('rejected', false)
+            .eq('verified', true)
+            .gte('start_datetime', new Date().toISOString())
+            .gte('senior_relevance_score', 0.85)
+            .order('senior_relevance_score', { ascending: false })
+            .limit(limit);
+
+        if (error) {
+            console.error('Featured events error:', error);
+            return [];
+        }
+
+        return (data as SeniorEvent[]) || [];
+
+    } catch (error) {
+        console.error('getFeaturedEvents error:', error);
+        return [];
+    }
+}
+
+export async function getEventsByCity(city: string, limit: number = 20): Promise<SeniorEvent[]> {
+    try {
+        const supabase = await createClient();
+
+        // @ts-expect-error - senior_events table will exist after migration
+        const { data, error } = await supabase
+            .from('senior_events')
+            .select('*')
+            .eq('approved', true)
+            .eq('rejected', false)
+            .ilike('city', city)
+            .gte('start_datetime', new Date().toISOString())
+            .order('start_datetime', { ascending: true })
+            .limit(limit);
+
+        if (error) {
+            console.error('Events by city error:', error);
+            return [];
+        }
+
+        return (data as SeniorEvent[]) || [];
+
+    } catch (error) {
+        console.error('getEventsByCity error:', error);
+        return [];
+    }
+}
+

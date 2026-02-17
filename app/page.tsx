@@ -107,44 +107,63 @@ export default function Home() {
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#1e4d45] opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#1e4d45]"></span>
               </span>
-              India's Most Trusted Senior Network
+              ✓ Built for Seniors in India
             </div>
 
-            {/* Hero Headline - Better typography scale */}
-            <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black leading-[1.05] text-gray-900 tracking-tight mb-8">
-              Dignity, Care & <br />
-              <span className="bg-gradient-to-r from-[#1e4d45] to-[#2a6b5e] bg-clip-text text-transparent italic font-serif">
-                Independence.
+            {/* Hero Headline - Clear value proposition */}
+            <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black leading-[1.05] text-gray-900 tracking-tight mb-6">
+              Your Companion for a <br />
+              <span className="bg-gradient-to-r from-[#1e4d45] to-[#2a6b5e] bg-clip-text text-transparent">
+                Vibrant Life After 60
               </span>
             </h1>
 
-            {/* Subheadline - Better readability */}
-            <p className="mt-8 text-lg sm:text-xl md:text-2xl text-gray-600 max-w-3xl mx-auto leading-relaxed font-medium px-4">
-              A holistic ecosystem for India's elders. Access verified medical care,
-              meaningful careers, and a community that feels like home.
+            {/* Subheadline - Clear benefits for seniors */}
+            <p className="mt-6 text-xl sm:text-2xl md:text-3xl text-gray-700 max-w-4xl mx-auto leading-relaxed font-semibold px-4">
+              Connect with friends. Find trusted services. Stay active and engaged.
+            </p>
+            <p className="mt-4 text-base sm:text-lg text-gray-600 max-w-3xl mx-auto leading-relaxed px-4">
+              MyMittr brings you verified events, health resources, and a caring community—all designed for senior citizens in India.
             </p>
 
-            {/* CTA Section - Improved spacing and hierarchy */}
-            <div className="mt-14 flex flex-col items-center gap-6">
+            {/* CTA Section - Simplified with clear primary and secondary actions */}
+            <div className="mt-12 flex flex-col items-center gap-5">
+              {/* Primary CTA */}
               <Link
-                href="/signup"
-                className="group relative bg-[#1e4d45] text-white px-10 sm:px-14 py-5 sm:py-6 rounded-2xl text-lg sm:text-xl font-bold hover:bg-[#153a33] transition-all duration-300 shadow-[0_20px_50px_rgba(30,77,69,0.3)] hover:shadow-[0_25px_60px_rgba(30,77,69,0.45)] transform hover:-translate-y-1 active:translate-y-0"
+                href="/services/companionship"
+                className="group relative bg-[#1e4d45] text-white px-12 sm:px-16 py-5 sm:py-6 rounded-2xl text-xl sm:text-2xl font-bold hover:bg-[#153a33] transition-all duration-300 shadow-[0_20px_50px_rgba(30,77,69,0.3)] hover:shadow-[0_25px_60px_rgba(30,77,69,0.45)] transform hover:-translate-y-1 active:translate-y-0"
               >
-                Join MyMittr Today
+                Explore Events & Activities
                 <span className="ml-2 inline-block transition-transform duration-300 group-hover:translate-x-1.5">→</span>
               </Link>
-              <div className="flex items-center gap-6 text-sm text-gray-500">
-                <span className="flex items-center gap-2">
-                  <svg className="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+
+              {/* Secondary CTA */}
+              <Link
+                href="/services/community"
+                className="group relative bg-white text-[#1e4d45] px-10 sm:px-12 py-4 sm:py-5 rounded-2xl text-lg sm:text-xl font-bold border-2 border-[#1e4d45] hover:bg-[#f4f9f7] transition-all duration-300 shadow-sm hover:shadow-md"
+              >
+                Join the Community
+              </Link>
+
+              {/* Trust Signals */}
+              <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-8 text-sm text-gray-600 mt-4">
+                <span className="flex items-center gap-2 font-semibold">
+                  <svg className="w-5 h-5 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                   </svg>
-                  Free to join
+                  Verified Events & Services
                 </span>
-                <span className="flex items-center gap-2">
-                  <svg className="w-5 h-5 text-blue-500" fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z" />
+                <span className="flex items-center gap-2 font-semibold">
+                  <svg className="w-5 h-5 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zM10 18a3 3 0 01-3-3h6a3 3 0 01-3 3z" />
                   </svg>
-                  Verified by 1,000+ families
+                  Safety-First Approach
+                </span>
+                <span className="flex items-center gap-2 font-semibold">
+                  <svg className="w-5 h-5 text-purple-600" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M2 10.5a1.5 1.5 0 113 0v6a1.5 1.5 0 01-3 0v-6zM6 10.333v5.43a2 2 0 001.106 1.79l.05.025A4 4 0 008.943 18h5.416a2 2 0 001.962-1.608l1.2-6A2 2 0 0015.56 8H12V4a2 2 0 00-2-2 1 1 0 00-1 1v.667a4 4 0 01-.8 2.4L6.8 7.933a4 4 0 00-.8 2.4z" />
+                  </svg>
+                  Trusted by 1,000+ Families
                 </span>
               </div>
             </div>
