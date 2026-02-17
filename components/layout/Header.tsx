@@ -90,12 +90,42 @@ export default function Header() {
   }, []);
 
   async function handleLogout() {
-    const supabase = createClient();
-    await supabase.auth.signOut();
-    setUser(null);
-    setUserName("");
-    setUserDropdownOpen(false);
-    router.push("/");
+    try {
+      const supabase = createClient();
+
+      // Sign out from Supabase
+      const { error } = await supabase.auth.signOut();
+
+      if (error) {
+        console.error('Logout error:', error);
+      }
+
+      // Clear local state
+      setUser(null);
+      setUserName("");
+      setUserDropdownOpen(false);
+
+      // Clear any cached data
+      if (typeof window !== 'undefined') {
+        // Clear localStorage
+        localStorage.clear();
+        // Clear sessionStorage
+        sessionStorage.clear();
+      }
+
+      // Force router refresh and redirect
+      router.refresh();
+      router.push("/");
+
+      // Force page reload to clear all state
+      setTimeout(() => {
+        window.location.href = "/";
+      }, 100);
+    } catch (error) {
+      console.error('Logout failed:', error);
+      // Force redirect even if error
+      window.location.href = "/";
+    }
   }
 
   const serviceLinks = [
