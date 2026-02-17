@@ -34,7 +34,8 @@ export default function LoginContent() {
       return;
     }
 
-    router.push(redirectTo);
+    // Force a full page reload to ensure server components refresh
+    window.location.href = redirectTo;
   };
 
   return (
