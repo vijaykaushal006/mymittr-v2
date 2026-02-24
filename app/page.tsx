@@ -114,7 +114,7 @@ export default function Home() {
             <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black leading-[1.05] text-gray-900 tracking-tight mb-6">
               Your Companion for a <br />
               <span className="bg-gradient-to-r from-[#1e4d45] to-[#2a6b5e] bg-clip-text text-transparent">
-                Vibrant Life After 60
+                Vibrant Life for Senior Citizens
               </span>
             </h1>
 
