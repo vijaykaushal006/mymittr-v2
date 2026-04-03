@@ -5,7 +5,7 @@ import Link from "next/link";
 import { Suspense } from "react";
 
 export const metadata = {
-  title: "MyMittr – Companion for Seniors in India",
+  title: "MyMitt,
   description:
     "Verified services, companionship and community for senior citizens in India.",
 };
