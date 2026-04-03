@@ -9,7 +9,7 @@ export const metadata = {
 export default function Vision() {
   const values = [
     {
-      title: "Self-Respect First",
+      title: "Self-Respect F",
       desc: "Getting older shouldn't mean losing your voice. We build everything to ensure seniors feel capable and respected.",
       icon: "🤝",
     },
